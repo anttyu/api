@@ -1,28 +1,30 @@
 <?php
 
+namespace Model;
+
 class Product
 {
     // подключение к базе данных и таблице "products"
     private $conn;
-    private $table_name = "products";
+    private string $table_name = "products";
 
     // свойства объекта
-    public $id;
-    public $name;
-    public $description;
-    public $price;
-    public $category_id;
-    public $category_name;
-    public $created;
+    public int $id;
+    public string $name;
+    public string $description;
+    public int $price;
+    public int $category_id;
+    public string $category_name;
+    public string $created;
 
     // конструктор для соединения с базой данных
-    public function __construct($db)
+     public function __construct($db)
     {
         $this->conn = $db;
     }
 
     // метод для получения товаров
-    function read()
+    public function read()
     {
         // выбираем все записи
         $query = "SELECT
@@ -44,7 +46,7 @@ class Product
     }
 
     // метод для создания товаров
-    function create()
+    public function create()
     {
         // запрос для вставки (создания) записей
         $query = "INSERT INTO
@@ -70,14 +72,15 @@ class Product
         $stmt->bindParam(":created", $this->created);
 
         // выполняем запрос
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
     }
 
     // метод для получения конкретного товара по ID
-    function read_one()
+    public function read_one()
     {
         // запрос для чтения одной записи (товара)
         $query = "SELECT
@@ -113,7 +116,7 @@ class Product
     }
 
     // метод для обновления товара
-    function update()
+    public function update()
     {
         // запрос для обновления записи (товара)
         $query = "UPDATE
@@ -121,19 +124,23 @@ class Product
     SET";
 
         $params = array();
-        if (!empty($this->name)) {
+        if (!empty($this->name))
+        {
             $query .= " name = :name,";
             $params[':name'] = $this->name;
         }
-        if (!empty($this->price)) {
+        if (!empty($this->price))
+        {
             $query .= " price = :price,";
             $params[':price'] = $this->price;
         }
-        if (!empty($this->description)) {
+        if (!empty($this->description))
+        {
             $query .= " description = :description,";
             $params[':description'] = $this->description;
         }
-        if (!empty($this->category_id)) {
+        if (!empty($this->category_id))
+        {
             $query .= " category_id = :category_id,";
             $params[':category_id'] = $this->category_id;
         }
@@ -146,19 +153,21 @@ class Product
 
         $params[':id'] = $this->id;
 
-        foreach ($params as $key => &$value) {
+        foreach ($params as $key => &$value)
+        {
             $stmt->bindParam($key, $value);
         }
 
         // выполняем запрос
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
     }
 
     // метод для удаления товара
-    function delete()
+    public function delete()
     {
         // запрос для удаления записи (товара)
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
@@ -173,14 +182,15 @@ class Product
         $stmt->bindParam(1, $this->id);
 
         // выполняем запрос
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
     }
 
     // метод для поиска товаров
-    function search($keywords)
+    public function search($keywords)
     {
         // поиск записей (товаров) по "названию товара", "описанию товара", "названию категории"
         $query = "SELECT
@@ -244,7 +254,7 @@ class Product
     // данный метод возвращает кол-во товаров
     public function count()
     {
-        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . "";
+        $query = "SELECT COUNT(*) as total_rows FROM " . $this->table_name . " ";
 
         $stmt = $this->conn->prepare($query);
         $stmt->execute();

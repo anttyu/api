@@ -1,22 +1,23 @@
 <?php
 
+namespace Model;
 
 class Cart
 {
     private $conn;
-    private $table_name = "cart";
+    private string $table_name = "cart";
 
-    public $id;
-    public $user_id;
-    public $product_id;
-    public $amount;
+    public int $id;
+    public int $user_id;
+    public int $product_id;
+    public int $amount;
 
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
-    function create()
+    public function create()
     {
         $query = "INSERT INTO
             " . $this->table_name . "
@@ -33,13 +34,15 @@ class Cart
         $stmt->bindParam(":product_id", $this->product_id);
         $stmt->bindParam(":amount", $this->amount);
 
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
     }
 
-    function read(){
+    public function read()
+    {
 
         $query = "SELECT * FROM " . $this->table_name;
 
@@ -51,7 +54,7 @@ class Cart
         return $stmt;
     }
 
-    function delete()
+    public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
 
@@ -67,7 +70,7 @@ class Cart
         return false;
     }
 
-    function update()
+    public function update()
     {
         $query = "UPDATE
         " . $this->table_name . "
@@ -75,7 +78,8 @@ class Cart
 
         $params = array();
 
-        if (!empty($this->amount)) {
+        if (!empty($this->amount))
+        {
             $query .= " amount = :amount,";
             $params[':amount'] = $this->amount;
         }
@@ -85,17 +89,20 @@ class Cart
         $stmt = $this->conn->prepare($query);
         $params[':id'] = $this->id;
 
-        foreach ($params as $key => &$value) {
+        foreach ($params as $key => &$value)
+        {
             $stmt->bindParam($key, $value);
         }
 
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
     }
 
-    function read_user_cart($user_id){
+    public function read_user_cart(int $user_id)
+    {
         $query = "SELECT id, user_id, product_id, amount FROM " . $this->table_name . " WHERE user_id = :user_id";
 
         $stmt = $this->conn->prepare($query);

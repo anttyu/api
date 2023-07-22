@@ -1,22 +1,24 @@
 <?php
 
+namespace Model;
 
 class User
 {
     private $conn;
     private $table_name = "users";
 
-    public $id;
-    public $name;
-    public $email;
-    public $password;
-    public $registration_date;
+    public int $id;
+    public string $name;
+    public string $email;
+    public string $password;
+    public string $registration_date;
 
-    public function __construct($db){
+    public function __construct($db)
+    {
         $this->conn = $db;
     }
 
-    function create()
+    public function create()
     {
         $query = "INSERT INTO
             " . $this->table_name . "
@@ -35,71 +37,71 @@ class User
         $stmt->bindParam(":password", $this->password);
         $stmt->bindParam(":registration_date", $this->registration_date);
 
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
     }
 
-    function read(){
-
+    public function read()
+    {
         $query = "SELECT * FROM " . $this->table_name;
-
         // подготовка запроса
         $stmt = $this->conn->prepare($query);
-
         // выполняем запрос
         $stmt->execute();
         return $stmt;
     }
 
-    function delete()
+    public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
-
         $stmt = $this->conn->prepare($query);
-
         $this->id = htmlspecialchars(strip_tags($this->id));
-
         $stmt->bindParam(1, $this->id);
 
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
     }
 
-    function update()
+    public function update()
     {
         $query = "UPDATE
         " . $this->table_name . "
     SET";
-
         $params = array();
-        if (!empty($this->name)) {
+        if (!empty($this->name))
+        {
             $query .= " name = :name,";
             $params[':name'] = $this->name;
         }
-        if (!empty($this->email)) {
+        if (!empty($this->email))
+        {
             $query .= " email = :email,";
             $params[':email'] = $this->email;
         }
-        if (!empty($this->password)) {
+        if (!empty($this->password))
+        {
             $query .= " password = :password,";
             $params[':password'] = $this->password;
         }
 
         $query = rtrim($query, ',');
         $query .= " WHERE id = :id";
-
         $stmt = $this->conn->prepare($query);
         $params[':id'] = $this->id;
 
-        foreach ($params as $key => &$value) {
+        foreach ($params as $key => &$value)
+        {
             $stmt->bindParam($key, $value);
         }
 
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;

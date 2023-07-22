@@ -1,4 +1,2 @@
-config/connection.php
+System/Config
 .idea
-config/core.php
-inputMessage.txt

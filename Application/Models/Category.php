@@ -1,5 +1,7 @@
 <?php
 
+namespace Model;
+
 class Category
 {
     // соединение с БД и таблицей "categories"
@@ -7,10 +9,10 @@ class Category
     private $table_name = "categories";
 
     // свойства объекта
-    public $id;
-    public $name;
-    public $description;
-    public $created;
+    public int $id;
+    public string $name;
+    public string $description;
+    public string $created;
 
     public function __construct($db)
     {
