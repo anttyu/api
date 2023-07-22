@@ -20,10 +20,10 @@ class ProductController extends Controller
 
     public function create()
     {
-        $name = isset($_GET['name']) ?? '';
-        $price = isset($_GET['price']) ?? '';
-        $description = isset($_GET['description']) ?? '';
-        $category_id = isset($_GET['category_id']) ?? '';
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $price = isset($_POST['price']) ?$_POST['price']: '';
+        $description = isset($_POST['description']) ?$_POST['description']: '';
+        $category_id = isset($_POST['category_id']) ?$_POST['category_id']: '';
 
         // убеждаемся, что данные не пусты
         if (!empty($name) && !empty($price) && !empty($description) && !empty($category_id))

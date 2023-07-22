@@ -20,9 +20,9 @@ class UserController extends Controller
 
     public function create()
     {
-        $name = isset($_GET['name']) ? $_GET['name'] : '';
-        $email = isset($_GET['email']) ? $_GET['email'] : '';
-        $password = isset($_GET['password']) ? $_GET['password'] : '';
+        $name = isset($_POST['name']) ? $_POST['name'] : '';
+        $email = isset($_POST['email']) ? $_POST['email'] : '';
+        $password = isset($_POST['password']) ? $_POST['password'] : '';
 
         if (!empty($name) && !empty($email) && !empty($password))
         {
@@ -45,6 +45,7 @@ class UserController extends Controller
         }
     }
 
+
     public function delete()
     {
         $this->user->id = isset($_GET['id']) ? $_GET['id'] : die();
@@ -54,7 +55,6 @@ class UserController extends Controller
             http_response_code(200);
             echo json_encode(array("message" => "Пользователь был удалён"), JSON_UNESCAPED_UNICODE);
         }
-
         else {
             http_response_code(503);
             echo json_encode(array("message" => "Не удалось удалить пользователя"));
@@ -71,7 +71,7 @@ class UserController extends Controller
             $users_arr = array();
             $users_arr["records"] = array();
 
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
                 extract($row);
                 $users_item = array

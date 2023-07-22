@@ -21,9 +21,9 @@ class CartController extends Controller
     public function create()
     {
 
-        $user_id = isset($_GET['user_id']) ?? '';
-        $product_id = isset($_GET['product_id']) ?? '';
-        $amount = isset($_GET['amount']) ?? '';
+        $user_id = isset($_POST['user_id']) ?$_POST['user_id']: '';
+        $product_id = isset($_POST['product_id']) ?$_POST['product_id']: '';
+        $amount = isset($_POST['amount']) ?$_POST['amount']: '';
 
         if (!empty($user_id) && !empty($product_id) && !empty($amount))
         {
