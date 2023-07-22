@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers;
+namespace Application\Controllers;
 class TestController
 {
     public function index()

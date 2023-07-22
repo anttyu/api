@@ -1,5 +1,5 @@
 <?php
-namespace Controllers;
+namespace Application\Controllers;
 use MVC\Controller;
 
 class UserController extends Controller

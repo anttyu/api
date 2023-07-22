@@ -2,18 +2,17 @@
 
 namespace System\Routing;
 
-use Controllers\TestController;
 
 class Startup
 {
     public static function createRouters(Router $router)
     {
         // Здесь добавляем все маршруты, необходимые для приложения
-        $router->addRoute('GET', '/products', 'ProductController@index');
-        $router->addRoute('GET', '/users', 'UserController@index');
-        $router->addRoute('GET', '/carts', 'CartController@index');
-        $router->addRoute('GET', '/categories', 'CategoryController@index');
-        $router->addRoute('GET', '/test', TestController::class . '@index');
+        $router->addRoute('GET', '/products', 'Application\Controllers\ProductController@index');
+        $router->addRoute('GET', '/users', 'Application\Controllers\UserController@index');
+        $router->addRoute('GET', '/carts', 'Application\Controllers\CartController@index');
+        $router->addRoute('GET', '/categories', 'Application\Controllers\CategoryController@index');
+        $router->addRoute('GET', '/test', 'Application\Controllers\TestController@index');
 
         // Возвращаем массив маршрутов для вывода
         return $router->getRoutes();

@@ -1,6 +1,6 @@
 <?php
 
-namespace Controllers;
+namespace Application\Controllers;
 use MVC\Controller;
 
 class CartController extends Controller

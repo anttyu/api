@@ -6,18 +6,15 @@ Autoloader::register();
 
 use System\Routing\Router;
 use System\Routing\Startup;
-use Http\Request;
-use Http\Response;
+use System\Http\Request;
+use System\Http\Response;
 
 $request = new Request();
 $response = new Response();
 
-$response->setHeader('Access-Control-Allow-Origin: *');
-$response->setHeader("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-$response->setHeader('Content-Type: application/json; charset=UTF-8');
 
-$request_method = $request->getMethod();
 $request_url = $request->getUrl();
+$request_method = $request->getMethod();
 
 $router = new Router();
 
@@ -26,12 +23,18 @@ Startup::createRouters($router);
 
 $route = $router->dispatch($request_url, $request_method);
 
+$response = new Response();
+
+$response->setHeader('Access-Control-Allow-Origin: *');
+$response->setHeader("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
+$response->setHeader('Content-Type: application/json; charset=UTF-8');
+
 if ($route) {
     // Разбираем строку с контроллером и методом
     list($controller_name, $method_name) = explode('@', $route['controller']);
 
     // Формируем полное имя класса контроллера
-    $controller_class = 'Controllers\\' . $controller_name;
+    $controller_class = $controller_name;
 
     // Создаем экземпляр контроллера
     $controller = new $controller_class();
@@ -42,5 +45,4 @@ if ($route) {
     $response->setStatusCode(404);
     $response->setContent(['error' => 'Not Found', 'status_code' => 404]);
 }
-
 $response->render();

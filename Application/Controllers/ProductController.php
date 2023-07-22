@@ -1,10 +1,15 @@
 <?php
 
-namespace Controllers;
+namespace Application\Controllers;
 use MVC\Controller;
 
-class ProductController extends Controller
+class ProductController
 {
+    public function index()
+    {
+        echo "ok";
+    }
+
     public function create()
     {
         $database = new Database();
