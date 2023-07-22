@@ -1,9 +1,20 @@
 <?php
+
 namespace Application\Controllers;
-use MVC\Controller;
+use System\MVC\Controller;
+use System\DB\Database;
+use Application\Models\Category;
 
 class UserController extends Controller
 {
+    public $db;
+    public function __construct()
+    {
+        $database = new Database();
+        $this->db = $database->getConnection();
+        $categoryModel = $this->model('User', $this->db);
+    }
+
     public function create()
     {
         $database = new Database();

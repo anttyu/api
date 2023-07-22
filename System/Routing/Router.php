@@ -24,13 +24,9 @@ class Router {
             $pattern = $route['pattern'];
             $pattern = str_replace('/', '\/', $pattern);
             $pattern = '/^' . $pattern . '$/';
-            echo $pattern . " Pattern" . '</br>'; // Распечатаем паттерн маршрута
-            echo $url . " url" . '</br>'; // Распечатаем URL запроса
-            echo $route['method'] . " route" . '</br>'; // Распечатаем метод маршрута
-            echo $method . " method" . '</br>'; // Распечатаем метод запроса
             if (preg_match($pattern, $url, $matches) && $route['method'] === $method)
             {
-                var_dump($route); // Распечатаем маршрут, если совпадение найдено
+                $route['matches'] = $matches;
                 return $route;
             }
         }

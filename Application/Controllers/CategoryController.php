@@ -1,15 +1,23 @@
 <?php
 
 namespace Application\Controllers;
-use MVC\Controller;
+use System\MVC\Controller;
+use System\DB\Database;
+use Application\Models\Category;
 
 class CategoryController extends Controller
 {
-    public function read()
+    public $db;
+    public function __construct()
     {
         $database = new Database();
-        $db = $database->getConnection();
-        $category = new Category($db);
+        $this->db = $database->getConnection();
+        $categoryModel = $this->model('Category', $this->db);
+    }
+
+    public function read()
+    {
+        $category = new Category($this->db);
         $stmt = $category->read();
         $num = $stmt->rowCount();
 
@@ -18,7 +26,7 @@ class CategoryController extends Controller
 
             $categories_arr = array();
             $categories_arr["records"] = array();
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
                 extract($row);
                 $category_item = array

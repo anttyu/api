@@ -1,16 +1,24 @@
 <?php
 
 namespace Application\Controllers;
-use MVC\Controller;
+use System\MVC\Controller;
+use System\DB\Database;
+use Application\Models\Cart;
 
 class CartController extends Controller
 {
-    public function create()
+    public $db;
+    public $cart;
+    public function __construct()
     {
         $database = new Database();
-        $db = $database->getConnection();
+        $this->db = $database->getConnection();
+        $categoryModel = $this->model('Cart', $this->db);
+        $this->cart = new Cart($this->db);
+    }
 
-        $cart = new Cart($db);
+    public function create()
+    {
 
         $user_id = isset($_GET['user_id']) ?? '';
         $product_id = isset($_GET['product_id']) ?? '';
@@ -18,11 +26,11 @@ class CartController extends Controller
 
         if (!empty($user_id) && !empty($product_id) && !empty($amount))
         {
-            $cart->user_id = $user_id;
-            $cart->product_id = $product_id;
-            $cart->amount = $amount;
+            $this->cart->user_id = $user_id;
+            $this->cart->product_id = $product_id;
+            $this->cart->amount = $amount;
 
-            if ($cart->create())
+            if ($this->cart->create())
             {
                 http_response_code(201);
                 echo json_encode(array("message" => "Товар добавлен в корзину."), JSON_UNESCAPED_UNICODE);
@@ -39,13 +47,9 @@ class CartController extends Controller
 
     public function delete()
     {
-        $database = new Database();
-        $db = $database->getConnection();
+        $this->cart->id = isset($_GET['id']) ?? die();
 
-        $cart = new Cart($db);
-        $cart->id = isset($_GET['id']) ?? die();
-
-        if ($cart->delete())
+        if ($this->cart->delete())
         {
             http_response_code(200);
             echo json_encode(array("message" => "Товар был удалён"), JSON_UNESCAPED_UNICODE);
@@ -58,12 +62,8 @@ class CartController extends Controller
 
     public function read()
     {
-        $database = new Database();
-        $db = $database->getConnection();
 
-        $cart = new Cart($db);
-
-        $stmt = $cart->read();
+        $stmt = $this->cart->read();
         $num = $stmt->rowCount();
 
         if ($num > 0)
@@ -72,9 +72,8 @@ class CartController extends Controller
             $carts_arr = array();
             $carts_arr["records"] = array();
 
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
-
                 extract($row);
                 $carts_item = array
                 (
@@ -87,7 +86,6 @@ class CartController extends Controller
             }
 
             http_response_code(200);
-
             echo json_encode($carts_arr);
         } else {
             http_response_code(404);
@@ -97,14 +95,11 @@ class CartController extends Controller
 
     public function read_user_cart()
     {
-        $database = new Database();
-        $db = $database->getConnection();
 
-        $cart = new Cart($db);
 
         $user_id = isset($_GET['user_id']) ?? die();
 
-        $stmt = $cart->read_user_cart($user_id);
+        $stmt = $this->cart->read_user_cart($user_id);
         $num = $stmt->rowCount();
 
         if ($num > 0)
@@ -112,7 +107,7 @@ class CartController extends Controller
             $carts_arr = array();
             $carts_arr['carts'] = array();
 
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
                 extract($row);
 
@@ -136,18 +131,15 @@ class CartController extends Controller
 
     public function update()
     {
-        $database = new Database();
-        $db = $database->getConnection();
 
-        $cart = new Cart($db);
-        $cart->id = isset($_GET['id']) ?? die();
+        $this->cart->id = isset($_GET['id']) ?? die();
 
         if (isset($_GET['amount']))
         {
-            $cart->amount = $_GET['amount'];
+            $this->cart->amount = $_GET['amount'];
         }
 
-        if ($cart->update())
+        if ($this->cart->update())
         {
             http_response_code(200);
             echo json_encode(array("message" => "Пользователь был обновлен"), JSON_UNESCAPED_UNICODE);

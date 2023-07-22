@@ -9,6 +9,7 @@ use System\Routing\Startup;
 use System\Http\Request;
 use System\Http\Response;
 
+
 $request = new Request();
 $response = new Response();
 

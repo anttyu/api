@@ -1,6 +1,6 @@
 <?php
 
-namespace Model;
+namespace Application\Models;
 
 class Category
 {
@@ -18,6 +18,7 @@ class Category
     {
         $this->conn = $db;
     }
+
 
     // метод для получения всех категорий товаров
     public function read()

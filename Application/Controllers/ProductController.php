@@ -1,13 +1,18 @@
 <?php
 
 namespace Application\Controllers;
-use MVC\Controller;
+use System\MVC\Controller;
+use System\DB\Database;
+use Application\Models\Category;
 
-class ProductController
+class ProductController extends Controller
 {
-    public function index()
+    public $db;
+    public function __construct()
     {
-        echo "ok";
+        $database = new Database();
+        $this->db = $database->getConnection();
+        $categoryModel = $this->model('Product', $this->db);
     }
 
     public function create()

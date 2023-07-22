@@ -1,11 +1,10 @@
 <?php
 
-namespace Database;
-
-include_once "../Config/config.php";
-
+namespace System\DB;
+include_once ('config.php');
 class Database
 {
+    // укажите свои учетные данные базы данных
     public $conn;
 
     // получаем соединение с БД
@@ -13,12 +12,10 @@ class Database
     {
         $this->conn = null;
 
-        try
-        {
-            $this->conn = new PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
+        try {
+            $this->conn = new \PDO("mysql:host=" . DB_HOST . ";dbname=" . DB_NAME, DB_USER, DB_PASSWORD);
             $this->conn->exec("set names utf8");
-        } catch (PDOException $exception)
-        {
+        } catch (\PDOException $exception) {
             echo "Ошибка подключения: " . $exception->getMessage();
         }
 
