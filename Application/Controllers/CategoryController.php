@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\Controllers;
+
 use System\MVC\Controller;
 use System\DB\Database;
 use Application\Models\Category;
@@ -8,17 +9,18 @@ use Application\Models\Category;
 class CategoryController extends Controller
 {
     public $db;
+    public $category;
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $categoryModel = $this->model('Category', $this->db);
+        $this->category = new Category($this->db);
     }
 
     public function read()
     {
-        $category = new Category($this->db);
-        $stmt = $category->read();
+        $stmt = $this->category->read();
         $num = $stmt->rowCount();
 
         if ($num > 0)

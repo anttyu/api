@@ -1,26 +1,25 @@
 <?php
 
 namespace Application\Controllers;
+
 use System\MVC\Controller;
 use System\DB\Database;
-use Application\Models\Category;
+use Application\Models\Product;
 
 class ProductController extends Controller
 {
     public $db;
+    public $product;
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $categoryModel = $this->model('Product', $this->db);
+        $this->product = new Product($this->db);
     }
 
     public function create()
     {
-        $database = new Database();
-        $db = $database->getConnection();
-        $product = new Product($db);
-
         $name = isset($_GET['name']) ?? '';
         $price = isset($_GET['price']) ?? '';
         $description = isset($_GET['description']) ?? '';
@@ -29,14 +28,14 @@ class ProductController extends Controller
         // убеждаемся, что данные не пусты
         if (!empty($name) && !empty($price) && !empty($description) && !empty($category_id))
         {
-            $product->name = $name;
-            $product->price = $price;
-            $product->description = $description;
-            $product->category_id = $category_id;
-            $product->created = date("Y-m-d H:i:s");
+            $this->product->name = $name;
+            $this->product->price = $price;
+            $this->product->description = $description;
+            $this->product->category_id = $category_id;
+            $this->product->created = date("Y-m-d H:i:s");
 
             // создание товара
-            if ($product->create())
+            if ($this->product->create())
             {
                 // установим код ответа - 201 создано
                 http_response_code(201);
@@ -61,12 +60,8 @@ class ProductController extends Controller
 
     public function read()
     {
-        $database = new Database();
-        $db = $database->getConnection();
 
-        $product = new Product($db);
-
-        $stmt = $product->read();
+        $stmt = $this->product->read();
         $num = $stmt->rowCount();
 
         if ($num > 0) {
@@ -74,7 +69,7 @@ class ProductController extends Controller
             $products_arr = array();
             $products_arr["records"] = array();
 
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
                 extract($row);
                 $product_item = array
@@ -99,31 +94,26 @@ class ProductController extends Controller
 
     public function update()
     {
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $product = new Product($db);
-
-        $product->id = isset($_GET['id']) ?? die();
+        $this->product->id = isset($_GET['id']) ?? die();
 
         if (isset($_GET['name']))
         {
-            $product->name = $_GET['name'];
+            $this->product->name = $_GET['name'];
         }
         if (isset($_GET['price']))
         {
-            $product->price = $_GET['price'];
+            $this->product->price = $_GET['price'];
         }
         if (isset($_GET['description']))
         {
-            $product->description = $_GET['description'];
+            $this->product->description = $_GET['description'];
         }
         if (isset($_GET['category_id']))
         {
-            $product->category_id = $_GET['category_id'];
+            $this->product->category_id = $_GET['category_id'];
         }
 
-        if ($product->update())
+        if ($this->product->update())
         {
             http_response_code(200);
 
@@ -137,12 +127,9 @@ class ProductController extends Controller
 
     public function delete()
     {
-        $database = new Database();
-        $db = $database->getConnection();
-        $product = new Product($db);
-        $product->id = isset($_GET['id']) ?? die();
+        $this->product->id = isset($_GET['id']) ?? die();
 
-        if ($product->delete())
+        if ($this->product->delete())
         {
             http_response_code(200);
 
@@ -157,14 +144,9 @@ class ProductController extends Controller
 
     public function search()
     {
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $product = new Product($db);
-
         $keywords = isset($_GET["s"]) ?? "";
 
-        $stmt = $product->search($keywords);
+        $stmt = $this->product->search($keywords);
         $num = $stmt->rowCount();
 
         if ($num > 0)
@@ -199,24 +181,19 @@ class ProductController extends Controller
 
     public function read_one()
     {
-        $database = new Database();
-        $db = $database->getConnection();
+        $this->product->id = isset($_GET["id"]) ?? die();
 
-        $product = new Product($db);
+        $this->product->read_one();
 
-        $product->id = isset($_GET["id"]) ?? die();
-
-        $product->read_one();
-
-        if ($product->name != null)
+        if ($this->product->name != null)
         {
             $product_arr = array(
-                "id" =>  $product->id,
-                "name" => $product->name,
-                "description" => $product->description,
-                "price" => $product->price,
-                "category_id" => $product->category_id,
-                "category_name" => $product->category_name
+                "id" =>  $this->product->id,
+                "name" => $this->product->name,
+                "description" => $this->product->description,
+                "price" => $this->product->price,
+                "category_id" => $this->product->category_id,
+                "category_name" => $this->product->category_name
             );
 
             http_response_code(200);
@@ -231,14 +208,9 @@ class ProductController extends Controller
 
     public function read_paging()
     {
-        $utilities = new Utilities();
+        $utilities = new \Utilities();
 
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $product = new Product($db);
-
-        $stmt = $product->readPaging($from_record_num, $records_per_page);
+        $stmt = $this->product->readPaging($from_record_num, $records_per_page);
         $num = $stmt->rowCount();
 
         if ($num > 0)
@@ -266,7 +238,7 @@ class ProductController extends Controller
             }
 
             // подключим пагинацию
-            $total_rows = $product->count();
+            $total_rows = $this->product->count();
             $page_url = "{$home_url}product/read_paging.php?";
             $paging = $utilities->getPaging($page, $total_rows, $records_per_page, $page_url);
             $products_arr["paging"] = $paging;

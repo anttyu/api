@@ -26,10 +26,6 @@ $route = $router->dispatch($request_url, $request_method);
 
 $response = new Response();
 
-$response->setHeader('Access-Control-Allow-Origin: *');
-$response->setHeader("Access-Control-Allow-Methods: GET, POST, OPTIONS, PUT, DELETE");
-$response->setHeader('Content-Type: application/json; charset=UTF-8');
-
 if ($route) {
     // Разбираем строку с контроллером и методом
     list($controller_name, $method_name) = explode('@', $route['controller']);
@@ -46,4 +42,3 @@ if ($route) {
     $response->setStatusCode(404);
     $response->setContent(['error' => 'Not Found', 'status_code' => 404]);
 }
-$response->render();

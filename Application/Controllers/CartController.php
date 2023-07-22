@@ -1,6 +1,7 @@
 <?php
 
 namespace Application\Controllers;
+
 use System\MVC\Controller;
 use System\DB\Database;
 use Application\Models\Cart;

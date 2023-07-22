@@ -1,39 +1,37 @@
 <?php
 
 namespace Application\Controllers;
+
 use System\MVC\Controller;
 use System\DB\Database;
-use Application\Models\Category;
+use Application\Models\User;
 
 class UserController extends Controller
 {
     public $db;
+    public $user;
     public function __construct()
     {
         $database = new Database();
         $this->db = $database->getConnection();
         $categoryModel = $this->model('User', $this->db);
+        $this->user = new User($this->db);
     }
 
     public function create()
     {
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $user = new User($db);
-
         $name = isset($_GET['name']) ? $_GET['name'] : '';
         $email = isset($_GET['email']) ? $_GET['email'] : '';
         $password = isset($_GET['password']) ? $_GET['password'] : '';
 
         if (!empty($name) && !empty($email) && !empty($password))
         {
-            $user->name = $name;
-            $user->email = $email;
-            $user->password = $password;
-            $user->registration_date = date("Y-m-d");
+            $this->user->name = $name;
+            $this->user->email = $email;
+            $this->user->password = $password;
+            $this->user->registration_date = date("Y-m-d");
 
-            if ($user->create())
+            if ($this->user->create())
             {
                 http_response_code(201);
                 echo json_encode(array("message" => "Пользователь был создан."), JSON_UNESCAPED_UNICODE);
@@ -49,37 +47,23 @@ class UserController extends Controller
 
     public function delete()
     {
-        $database = new Database();
-        $db = $database->getConnection();
+        $this->user->id = isset($_GET['id']) ? $_GET['id'] : die();
 
-        $user = new User($db);
-
-        $user->id = isset($_GET['id']) ? $_GET['id'] : die();
-
-        if ($user->delete())
+        if ($this->user->delete())
         {
-
             http_response_code(200);
-
             echo json_encode(array("message" => "Пользователь был удалён"), JSON_UNESCAPED_UNICODE);
         }
 
         else {
-
             http_response_code(503);
-
             echo json_encode(array("message" => "Не удалось удалить пользователя"));
         }
     }
 
     public function read()
     {
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $user = new User($db);
-
-        $stmt = $user->read();
+        $stmt = $this->user->read();
         $num = $stmt->rowCount();
 
         if ($num > 0) {
@@ -112,28 +96,23 @@ class UserController extends Controller
 
     public function update()
     {
-        $database = new Database();
-        $db = $database->getConnection();
-
-        $user = new User($db);
-
-        $user->id = isset($_GET['id']) ? $_GET['id'] : die();
+        $this->user->id = isset($_GET['id']) ? $_GET['id'] : die();
 
         if (isset($_GET['name']))
         {
-            $user->name = $_GET['name'];
+            $this->user->name = $_GET['name'];
         }
         if (isset($_GET['email']))
         {
-            $user->email = $_GET['email'];
+            $this->user->email = $_GET['email'];
         }
         if (isset($_GET['password']))
         {
-            $user->password = $_GET['password'];
+            $this->user->password = $_GET['password'];
         }
 
 
-        if ($user->update())
+        if ($this->user->update())
         {
             http_response_code(200);
             echo json_encode(array("message" => "Пользователь был обновлен"), JSON_UNESCAPED_UNICODE);
