@@ -46,9 +46,10 @@ class CartController extends Controller
         }
     }
 
-    public function delete()
+    public function delete($id)
     {
-        $this->cart->id = isset($_GET['id']) ?? die();
+        $id = (int) substr($id, strrpos($id, '/') + 1);
+        $this->user->id = $id;
 
         if ($this->cart->delete())
         {

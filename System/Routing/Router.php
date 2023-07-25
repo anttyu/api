@@ -16,12 +16,14 @@ class Router {
         );
     }
 
-    // В методе dispatch класса Router
     public function dispatch($url, $method)
     {
         foreach ($this->routes as $route)
         {
             $pattern = $route['pattern'];
+
+            $pattern = preg_replace('/{id}/', '\d+', $pattern);
+
             $pattern = str_replace('/', '\/', $pattern);
             $pattern = '/^' . $pattern . '$/';
             if (preg_match($pattern, $url, $matches) && $route['method'] === $method)
@@ -32,7 +34,6 @@ class Router {
         }
         return null;
     }
-
 
     public function getRoutes() {
         return $this->routes;

@@ -29,8 +29,8 @@ class Request
         if ($key !== null) {
             return $data[$key] ?? null;
         }
-
         return $data;
+
     }
 
     public function server($key = null)
@@ -45,11 +45,6 @@ class Request
     public function getMethod()
     {
         return strtoupper($this->server('REQUEST_METHOD'));
-    }
-
-    public function getClientIp()
-    {
-        return $this->server('REMOTE_ADDR');
     }
 
     public function getUrl()

@@ -5,6 +5,7 @@ namespace Application\Controllers;
 use System\MVC\Controller;
 use System\DB\Database;
 use Application\Models\User;
+use System\Http\Response;
 
 class UserController extends Controller
 {
@@ -46,9 +47,10 @@ class UserController extends Controller
     }
 
 
-    public function delete()
+    public function delete($id)
     {
-        $this->user->id = isset($_GET['id']) ? $_GET['id'] : die();
+        $id = (int) substr($id, strrpos($id, '/') + 1);
+        $this->user->id = $id;
 
         if ($this->user->delete())
         {
