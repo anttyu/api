@@ -80,39 +80,17 @@ class Product
     }
 
     // метод для получения конкретного товара по ID
-    public function read_one()
+    public function read_one($id)
     {
-        // запрос для чтения одной записи (товара)
-        $query = "SELECT
-            c.name as category_name, p.id, p.name, p.description, p.price, p.category_id, p.created
-        FROM
-            " . $this->table_name . " p
-            LEFT JOIN
-                categories c
-                    ON p.category_id = c.id
-        WHERE
-            p.id = ?
-        LIMIT
-            0,1";
+        $query = "SELECT id, name, description, price, category_id, created, modified FROM " . $this->table_name . " WHERE id = :id";
 
-        // подготовка запроса
         $stmt = $this->conn->prepare($query);
 
-        // привязываем id товара, который будет получен
-        $stmt->bindParam(1, $this->id);
+        $stmt->bindParam(":id", $id);
 
-        // выполняем запрос
         $stmt->execute();
 
-        // получаем извлеченную строку
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
-
-        // установим значения свойств объекта
-        $this->name = $row["name"];
-        $this->price = $row["price"];
-        $this->description = $row["description"];
-        $this->category_id = $row["category_id"];
-        $this->category_name = $row["category_name"];
+        return $stmt;
     }
 
     // метод для обновления товара
@@ -241,8 +219,8 @@ class Product
         $stmt = $this->conn->prepare($query);
 
         // свяжем значения переменных
-        $stmt->bindParam(1, $from_record_num, PDO::PARAM_INT);
-        $stmt->bindParam(2, $records_per_page, PDO::PARAM_INT);
+        $stmt->bindParam(1, $from_record_num, \PDO::PARAM_INT);
+        $stmt->bindParam(2, $records_per_page, \PDO::PARAM_INT);
 
         // выполняем запрос
         $stmt->execute();
@@ -259,7 +237,7 @@ class Product
         $stmt = $this->conn->prepare($query);
         $stmt->execute();
 
-        $row = $stmt->fetch(PDO::FETCH_ASSOC);
+        $row = $stmt->fetch(\PDO::FETCH_ASSOC);
 
         return $row["total_rows"];
     }

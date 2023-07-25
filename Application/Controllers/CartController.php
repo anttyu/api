@@ -49,7 +49,7 @@ class CartController extends Controller
     public function delete($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
-        $this->user->id = $id;
+        $this->cart->id = $id;
 
         if ($this->cart->delete())
         {
@@ -97,8 +97,6 @@ class CartController extends Controller
 
     public function read_user_cart()
     {
-
-
         $user_id = isset($_GET['user_id']) ?? die();
 
         $stmt = $this->cart->read_user_cart($user_id);
@@ -120,7 +118,6 @@ class CartController extends Controller
                     "product_id" => $product_id,
                     "amount" => $amount
                 );
-
                 array_push($carts_arr['carts'], $cart_item);
             }
             http_response_code(200);
@@ -133,7 +130,6 @@ class CartController extends Controller
 
     public function update()
     {
-
         $this->cart->id = isset($_GET['id']) ?? die();
 
         if (isset($_GET['amount']))

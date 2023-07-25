@@ -10,6 +10,12 @@ class ProductController extends Controller
 {
     public $db;
     public $product;
+    public $name;
+    public $price;
+    public $category_id;
+    public $created;
+    public $modified;
+
     public function __construct()
     {
         $database = new Database();
@@ -116,11 +122,9 @@ class ProductController extends Controller
         if ($this->product->update())
         {
             http_response_code(200);
-
             echo json_encode(array("message" => "Товар был обновлен"), JSON_UNESCAPED_UNICODE);
         } else {
             http_response_code(503);
-
             echo json_encode(array("message" => "Невозможно обновить товар"), JSON_UNESCAPED_UNICODE);
         }
     }
@@ -128,37 +132,31 @@ class ProductController extends Controller
     public function delete($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
-        $this->user->id = $id;
+        $this->product->id = $id;
 
         if ($this->product->delete())
         {
             http_response_code(200);
-
             echo json_encode(array("message" => "Товар был удалён"), JSON_UNESCAPED_UNICODE);
         }
         else {
             http_response_code(503);
-
             echo json_encode(array("message" => "Не удалось удалить товар"));
         }
     }
 
-    public function search()
+    public function search($keywords)
     {
-        $keywords = isset($_GET["s"]) ?? "";
-
+        $keywords =  substr($keywords, strrpos($keywords, '/') + 1);
         $stmt = $this->product->search($keywords);
         $num = $stmt->rowCount();
 
         if ($num > 0)
         {
-
             $products_arr = array();
             $products_arr["records"] = array();
-
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
-
                 extract($row);
                 $product_item = array(
                     "id" => $id,
@@ -171,46 +169,48 @@ class ProductController extends Controller
                 array_push($products_arr["records"], $product_item);
             }
             http_response_code(200);
-
             echo json_encode($products_arr);
         } else {
             http_response_code(404);
-
             echo json_encode(array("message" => "Товары не найдены."), JSON_UNESCAPED_UNICODE);
         }
     }
 
-    public function read_one()
+    public function read_one($id)
     {
-        $this->product->id = isset($_GET["id"]) ?? die();
+        $id = (int) substr($id, strrpos($id, '/') + 1);
+        $stmt = $this->product->read_one($id);
+        $num = $stmt->rowCount();
 
-        $this->product->read_one();
-
-        if ($this->product->name != null)
+        if ($num > 0)
         {
-            $product_arr = array(
-                "id" =>  $this->product->id,
-                "name" => $this->product->name,
-                "description" => $this->product->description,
-                "price" => $this->product->price,
-                "category_id" => $this->product->category_id,
-                "category_name" => $this->product->category_name
-            );
+            $products_arr = array();
+            $products_arr['records'] = array();
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
+            {
+                extract($row);
 
+                $product_item = array(
+                    "id" => $id,
+                    "name" => $name,
+                    "description" => $price,
+                    "category_id" => $category_id,
+                    "created" => $created,
+                    "modified" => $modified
+                );
+                array_push($products_arr['records'], $product_item);
+            }
             http_response_code(200);
-
-            echo json_encode($product_arr);
+            echo json_encode($product_item, JSON_UNESCAPED_UNICODE);
         } else {
             http_response_code(404);
-
-            echo json_encode(array("message" => "Товар не существует"), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array("message" => "Продукты не найдены"), JSON_UNESCAPED_UNICODE);
         }
     }
 
     public function read_paging()
     {
         $utilities = new \Utilities();
-
         $stmt = $this->product->readPaging($from_record_num, $records_per_page);
         $num = $stmt->rowCount();
 
@@ -222,7 +222,7 @@ class ProductController extends Controller
             $products_arr["paging"] = array();
 
             // получаем содержимое нашей таблицы
-            while ($row = $stmt->fetch(PDO::FETCH_ASSOC))
+            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
                 // извлечение строки
                 extract($row);

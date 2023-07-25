@@ -9,9 +9,9 @@ class Startup
     {
         // Здесь добавляем все маршруты, необходимые для приложения
         $router->addRoute('GET', '/products', 'Application\Controllers\ProductController@read');
-        $router->addRoute('GET', '/products', 'Application\Controllers\ProductController@read_one');
+        $router->addRoute('GET', '/products/{id}', 'Application\Controllers\ProductController@read_one');
         $router->addRoute('GET', '/products/read_paging', 'Application\Controllers\ProductController@read_paging');
-        $router->addRoute('GET', '/products/search', 'Application\Controllers\ProductController@search');
+        $router->addRoute('GET', '/products/search/{query}', 'Application\Controllers\ProductController@search');
         $router->addRoute('POST', '/products', 'Application\Controllers\ProductController@create');
         $router->addRoute('PATCH', '/products', 'Application\Controllers\ProductController@update');
         $router->addRoute('DELETE', '/products/{id}', 'Application\Controllers\ProductController@delete');

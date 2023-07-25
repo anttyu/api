@@ -11,6 +11,7 @@ class UserController extends Controller
 {
     public $db;
     public $user;
+
     public function __construct()
     {
         $database = new Database();
@@ -45,7 +46,6 @@ class UserController extends Controller
             echo json_encode(array("message" => "Невозможно создать пользователя. Данные неполные."), JSON_UNESCAPED_UNICODE);
         }
     }
-
 
     public function delete($id)
     {

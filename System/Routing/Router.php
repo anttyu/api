@@ -15,7 +15,6 @@ class Router {
             'controller' => $controller
         );
     }
-
     public function dispatch($url, $method)
     {
         foreach ($this->routes as $route)
@@ -23,6 +22,7 @@ class Router {
             $pattern = $route['pattern'];
 
             $pattern = preg_replace('/{id}/', '\d+', $pattern);
+            $pattern = preg_replace('/{query}/', '\w+', $pattern);
 
             $pattern = str_replace('/', '\/', $pattern);
             $pattern = '/^' . $pattern . '$/';
@@ -32,6 +32,14 @@ class Router {
                 return $route;
             }
         }
+        /*
+        echo "URL: " . $url . "<br>";
+        echo "Method: " . $method . "<br>";
+        echo "Available routes: ";
+        foreach ($this->routes as $route) {
+            echo $route['pattern'] . " ";
+        }*/
+
         return null;
     }
 
