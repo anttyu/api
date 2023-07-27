@@ -10,11 +10,6 @@ class ProductController extends Controller
 {
     public $db;
     public $product;
-    public $name;
-    public $price;
-    public $category_id;
-    public $created;
-    public $modified;
 
     public function __construct()
     {
@@ -45,28 +40,28 @@ class ProductController extends Controller
             {
                 // установим код ответа - 201 создано
                 http_response_code(201);
-
                 // сообщим пользователю
                 echo json_encode(array("message" => "Товар был создан."), JSON_UNESCAPED_UNICODE);
-            } else {
+            }
+            else
+            {
                 // установим код ответа - 503 сервис недоступен
                 http_response_code(503);
-
                 // сообщим пользователю
                 echo json_encode(array("message" => "Невозможно создать товар."), JSON_UNESCAPED_UNICODE);
             }
-        } else {
+        }
+        else
+        {
             // установим код ответа - 400 неверный запрос
             http_response_code(400);
-
             // сообщим пользователю
             echo json_encode(array("message" => "Невозможно создать товар. Данные неполные."), JSON_UNESCAPED_UNICODE);
         }
-            }
+    }
 
     public function read()
     {
-
         $stmt = $this->product->read();
         $num = $stmt->rowCount();
 
@@ -91,34 +86,37 @@ class ProductController extends Controller
             }
             http_response_code(200);
             echo json_encode($products_arr);
-        } else {
+        }
+        else
+        {
             http_response_code(404);
-
             echo json_encode(array("message" => "Товары не найдены."), JSON_UNESCAPED_UNICODE);
         }
     }
 
-    public function update()
+    public function update($id)
     {
-        $this->product->id = isset($_GET['id']) ?? die();
+        $id = (int) substr($id, strrpos($id, '/') + 1);
+        $this->product->id = $id;
 
-        if (isset($_GET['name']))
-        {
-            $this->product->name = $_GET['name'];
-        }
-        if (isset($_GET['price']))
-        {
-            $this->product->price = $_GET['price'];
-        }
-        if (isset($_GET['description']))
-        {
-            $this->product->description = $_GET['description'];
-        }
-        if (isset($_GET['category_id']))
-        {
-            $this->product->category_id = $_GET['category_id'];
-        }
+        parse_str(file_get_contents("php://input"), $patchData);
 
+        if (isset($patchData['name']))
+        {
+            $this->product->name = $patchData['name'];
+        }
+        if (isset($patchData['price']))
+        {
+            $this->product->price = $patchData['price'];
+        }
+        if (isset($patchData['description']))
+        {
+            $this->product->description = $patchData['description'];
+        }
+        if (isset($patchData['category_id']))
+        {
+            $this->product->category_id = $patchData['category_id'];
+        }
         if ($this->product->update())
         {
             http_response_code(200);
@@ -193,7 +191,7 @@ class ProductController extends Controller
                 $product_item = array(
                     "id" => $id,
                     "name" => $name,
-                    "description" => $price,
+                    "description" => $description,
                     "category_id" => $category_id,
                     "created" => $created,
                     "modified" => $modified
@@ -202,60 +200,11 @@ class ProductController extends Controller
             }
             http_response_code(200);
             echo json_encode($product_item, JSON_UNESCAPED_UNICODE);
-        } else {
+        }
+        else
+        {
             http_response_code(404);
             echo json_encode(array("message" => "Продукты не найдены"), JSON_UNESCAPED_UNICODE);
-        }
-    }
-
-    public function read_paging()
-    {
-        $utilities = new \Utilities();
-        $stmt = $this->product->readPaging($from_record_num, $records_per_page);
-        $num = $stmt->rowCount();
-
-        if ($num > 0)
-        {
-            // массив товаров
-            $products_arr = array();
-            $products_arr["records"] = array();
-            $products_arr["paging"] = array();
-
-            // получаем содержимое нашей таблицы
-            while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
-            {
-                // извлечение строки
-                extract($row);
-                $product_item = array
-                (
-                    "id" => $id,
-                    "name" => $name,
-                    "description" => html_entity_decode($description),
-                    "price" => $price,
-                    "category_id" => $category_id,
-                    "category_name" => $category_name
-                );
-                array_push($products_arr["records"], $product_item);
-            }
-
-            // подключим пагинацию
-            $total_rows = $this->product->count();
-            $page_url = "{$home_url}product/read_paging.php?";
-            $paging = $utilities->getPaging($page, $total_rows, $records_per_page, $page_url);
-            $products_arr["paging"] = $paging;
-
-            // установим код ответа - 200 OK
-            http_response_code(200);
-
-            // вывод в json-формате
-            echo json_encode($products_arr);
-        } else {
-
-            // код ответа - 404 Ничего не найдено
-            http_response_code(404);
-
-            // сообщим пользователю, что товаров не существует
-            echo json_encode(array("message" => "Товары не найдены"), JSON_UNESCAPED_UNICODE);
         }
     }
 }

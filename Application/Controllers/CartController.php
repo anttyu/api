@@ -20,7 +20,6 @@ class CartController extends Controller
 
     public function create()
     {
-
         $user_id = isset($_POST['user_id']) ?$_POST['user_id']: '';
         $product_id = isset($_POST['product_id']) ?$_POST['product_id']: '';
         $amount = isset($_POST['amount']) ?$_POST['amount']: '';
@@ -35,12 +34,15 @@ class CartController extends Controller
             {
                 http_response_code(201);
                 echo json_encode(array("message" => "Товар добавлен в корзину."), JSON_UNESCAPED_UNICODE);
-            } else {
-
+            }
+            else
+            {
                 http_response_code(503);
                 echo json_encode(array("message" => "Невозможно добавить в корзину."), JSON_UNESCAPED_UNICODE);
             }
-        } else {
+        }
+        else
+        {
             http_response_code(400);
             echo json_encode(array("message" => "Невозможно добавить в корзину. Данные неполные."), JSON_UNESCAPED_UNICODE);
         }
@@ -50,13 +52,13 @@ class CartController extends Controller
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
         $this->cart->id = $id;
-
         if ($this->cart->delete())
         {
             http_response_code(200);
             echo json_encode(array("message" => "Товар был удалён"), JSON_UNESCAPED_UNICODE);
         }
-        else {
+        else
+        {
             http_response_code(503);
             echo json_encode(array("message" => "Не удалось удалить товар"));
         }
@@ -64,13 +66,11 @@ class CartController extends Controller
 
     public function read()
     {
-
         $stmt = $this->cart->read();
         $num = $stmt->rowCount();
 
         if ($num > 0)
         {
-
             $carts_arr = array();
             $carts_arr["records"] = array();
 
@@ -86,18 +86,20 @@ class CartController extends Controller
                 );
                 array_push($carts_arr["records"], $carts_item);
             }
-
             http_response_code(200);
             echo json_encode($carts_arr);
-        } else {
+        }
+        else
+        {
             http_response_code(404);
-            echo json_encode(array("message" => "Пользователи не найдены."), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array("message" => "Корзины не найдены."), JSON_UNESCAPED_UNICODE);
         }
     }
 
-    public function read_user_cart()
+    public function read_user_cart($id)
     {
-        $user_id = isset($_GET['user_id']) ?? die();
+        $user_id = (int) substr($id, strrpos($id, '/') + 1);
+        $this->cart->id = $user_id;
 
         $stmt = $this->cart->read_user_cart($user_id);
         $num = $stmt->rowCount();
@@ -110,7 +112,6 @@ class CartController extends Controller
             while ($row = $stmt->fetch(\PDO::FETCH_ASSOC))
             {
                 extract($row);
-
                 $cart_item = array
                 (
                     "id" => $id,
@@ -122,28 +123,32 @@ class CartController extends Controller
             }
             http_response_code(200);
             echo json_encode($carts_arr, JSON_UNESCAPED_UNICODE);
-        } else {
+        }
+        else
+        {
             http_response_code(404);
             echo json_encode(array("message" => "Корзины не найдены"), JSON_UNESCAPED_UNICODE);
         }
     }
 
-    public function update()
+    public function update($id)
     {
-        $this->cart->id = isset($_GET['id']) ?? die();
+        $id = (int) substr($id, strrpos($id, '/') + 1);
+        $this->cart->id = $id;
 
-        if (isset($_GET['amount']))
-        {
-            $this->cart->amount = $_GET['amount'];
-        }
+        parse_str(file_get_contents("php://input"), $patchData);
+        $this->cart->amount = (int)(isset($patchData['amount']) ? $patchData['amount'] : '');
 
         if ($this->cart->update())
         {
             http_response_code(200);
-            echo json_encode(array("message" => "Пользователь был обновлен"), JSON_UNESCAPED_UNICODE);
-        } else {
+            echo json_encode(array("message" => "Корзина была обновлена"), JSON_UNESCAPED_UNICODE);
+        }
+        else
+        {
             http_response_code(503);
-            echo json_encode(array("message" => "Невозможно обновить пользователя"), JSON_UNESCAPED_UNICODE);
+            echo json_encode(array("message" => "Не удалось обновить корзину"), JSON_UNESCAPED_UNICODE);
         }
     }
+
 }

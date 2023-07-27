@@ -39,11 +39,11 @@ class Router {
         foreach ($this->routes as $route) {
             echo $route['pattern'] . " ";
         }*/
-
         return null;
     }
 
-    public function getRoutes() {
+    public function getRoutes()
+    {
         return $this->routes;
     }
 }

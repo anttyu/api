@@ -43,13 +43,9 @@ class Cart
 
     public function read()
     {
-
         $query = "SELECT * FROM " . $this->table_name;
 
-        // подготовка запроса
         $stmt = $this->conn->prepare($query);
-
-        // выполняем запрос
         $stmt->execute();
         return $stmt;
     }
@@ -57,14 +53,12 @@ class Cart
     public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
-
         $stmt = $this->conn->prepare($query);
-
         $this->id = htmlspecialchars(strip_tags($this->id));
-
         $stmt->bindParam(1, $this->id);
 
-        if ($stmt->execute()) {
+        if ($stmt->execute())
+        {
             return true;
         }
         return false;
@@ -77,7 +71,6 @@ class Cart
     SET";
 
         $params = array();
-
         if (!empty($this->amount))
         {
             $query .= " amount = :amount,";
@@ -93,7 +86,6 @@ class Cart
         {
             $stmt->bindParam($key, $value);
         }
-
         if ($stmt->execute())
         {
             return true;
@@ -106,9 +98,7 @@ class Cart
         $query = "SELECT id, user_id, product_id, amount FROM " . $this->table_name . " WHERE user_id = :user_id";
 
         $stmt = $this->conn->prepare($query);
-
         $stmt->bindParam(":user_id", $user_id);
-
         $stmt->execute();
 
         return $stmt;

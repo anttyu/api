@@ -106,4 +106,17 @@ class User
         }
         return false;
     }
+
+    public function read_one($id)
+    {
+        $query = "SELECT id, name, email, password FROM " . $this->table_name . " WHERE id = :id";
+
+        $stmt = $this->conn->prepare($query);
+
+        $stmt->bindParam(":id", $id);
+
+        $stmt->execute();
+
+        return $stmt;
+    }
 }
