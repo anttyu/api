@@ -16,14 +16,13 @@ $request_url = $request->getUrl();
 $request_method = $request->getMethod();
 
 $router = new Router();
-
 Startup::createRouters($router);
-
 $route = $router->dispatch($request_url, $request_method);
 
 $response = new Response();
 
-if ($route) {
+if ($route)
+{
     // Разбираем строку с контроллером и методом
     list($controller_name, $method_name) = explode('@', $route['controller']);
 
@@ -35,7 +34,9 @@ if ($route) {
 
     // Вызываем метод контроллера и передаем ему совпадения из URL
     call_user_func_array([$controller, $method_name], $route['matches']);
-} else {
+}
+else
+{
     http_response_code(404);
     echo json_encode(array("message" => "Маршрут не найден"), JSON_UNESCAPED_UNICODE);
 }

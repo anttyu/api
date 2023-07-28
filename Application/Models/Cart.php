@@ -2,21 +2,50 @@
 
 namespace Application\Models;
 
+/**
+ * Class Cart
+ * @package Application\Models
+ */
 class Cart
 {
+    /**
+     * @var
+     */
     private $conn;
+    /**
+     * @var string
+     */
     private string $table_name = "cart";
 
+    /**
+     * @var int
+     */
     public int $id;
+    /**
+     * @var int
+     */
     public int $user_id;
+    /**
+     * @var int
+     */
     public int $product_id;
+    /**
+     * @var int
+     */
     public int $amount;
 
+    /**
+     * Cart constructor.
+     * @param $db
+     */
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
+    /**
+     * @return bool
+     */
     public function create()
     {
         $query = "INSERT INTO
@@ -41,6 +70,9 @@ class Cart
         return false;
     }
 
+    /**
+     * @return mixed
+     */
     public function read()
     {
         $query = "SELECT * FROM " . $this->table_name;
@@ -50,6 +82,9 @@ class Cart
         return $stmt;
     }
 
+    /**
+     * @return bool
+     */
     public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
@@ -64,6 +99,9 @@ class Cart
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function update()
     {
         $query = "UPDATE
@@ -93,6 +131,10 @@ class Cart
         return false;
     }
 
+    /**
+     * @param int $user_id
+     * @return mixed
+     */
     public function read_user_cart(int $user_id)
     {
         $query = "SELECT id, user_id, product_id, amount FROM " . $this->table_name . " WHERE user_id = :user_id";

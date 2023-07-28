@@ -6,10 +6,25 @@ use System\MVC\Controller;
 use System\DB\Database;
 use Application\Models\Cart;
 
+/**
+ * Class CartController
+ * @package Application\Controllers
+ */
 class CartController extends Controller
 {
+    /**
+     * @var \PDO|null
+     */
     public $db;
+    /**
+     * @var Cart
+     */
     public $cart;
+
+    /**
+     * CartController constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
         $database = new Database();
@@ -18,6 +33,9 @@ class CartController extends Controller
         $this->cart = new Cart($this->db);
     }
 
+    /**
+     *
+     */
     public function create()
     {
         $user_id = isset($_POST['user_id']) ?$_POST['user_id']: '';
@@ -48,6 +66,9 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
@@ -64,6 +85,9 @@ class CartController extends Controller
         }
     }
 
+    /**
+     *
+     */
     public function read()
     {
         $stmt = $this->cart->read();
@@ -96,6 +120,9 @@ class CartController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function read_user_cart($id)
     {
         $user_id = (int) substr($id, strrpos($id, '/') + 1);
@@ -130,7 +157,9 @@ class CartController extends Controller
             echo json_encode(array("message" => "Корзины не найдены"), JSON_UNESCAPED_UNICODE);
         }
     }
-
+    /**
+     * @param $id
+     */
     public function update($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);

@@ -1,6 +1,9 @@
 <?php
 
 
+/**
+ * Class Autoloader
+ */
 class Autoloader
 {
     public static function register()
@@ -11,7 +14,8 @@ class Autoloader
             if (file_exists($file))
             {
                 require_once $file;
-            } else
+            }
+            else
             {
                 echo "Class not found: $class<br>";
             }

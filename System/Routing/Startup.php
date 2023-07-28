@@ -3,8 +3,16 @@
 namespace System\Routing;
 
 
+/**
+ * Class Startup
+ * @package System\Routing
+ */
 class Startup
 {
+    /**
+     * @param Router $router
+     * @return array
+     */
     public static function createRouters(Router $router)
     {
         // Здесь добавляем все маршруты, необходимые для приложения

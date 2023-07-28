@@ -2,12 +2,24 @@
 
 namespace System\DB;
 include_once ('config.php');
+
+/**
+ * Class Database
+ * @package System\DB
+ */
 class Database
 {
     // укажите свои учетные данные базы данных
+    /**
+     * @var
+     */
     public $conn;
 
     // получаем соединение с БД
+
+    /**
+     * @return \PDO|null
+     */
     public function getConnection()
     {
         $this->conn = null;

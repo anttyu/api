@@ -7,11 +7,25 @@ use System\DB\Database;
 use Application\Models\User;
 use System\Http\Response;
 
+/**
+ * Class UserController
+ * @package Application\Controllers
+ */
 class UserController extends Controller
 {
+    /**
+     * @var \PDO|null
+     */
     public $db;
+    /**
+     * @var User
+     */
     public $user;
 
+    /**
+     * UserController constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
         $database = new Database();
@@ -20,6 +34,9 @@ class UserController extends Controller
         $this->user = new User($this->db);
     }
 
+    /**
+     *
+     */
     public function create()
     {
         $name = isset($_POST['name']) ? $_POST['name'] : '';
@@ -51,6 +68,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
@@ -67,6 +87,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     *
+     */
     public function read()
     {
         $stmt = $this->user->read();
@@ -100,6 +123,9 @@ class UserController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function update($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
@@ -131,6 +157,10 @@ class UserController extends Controller
             echo json_encode(array("message" => "Невозможно обновить пользователя"), JSON_UNESCAPED_UNICODE);
         }
     }
+
+    /**
+     * @param $id
+     */
     public function read_one($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);

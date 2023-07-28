@@ -2,10 +2,25 @@
 
 namespace System\Routing;
 
+/**
+ * Class Router
+ * @package System\Routing
+ */
 class Router {
+    /**
+     * @var array
+     */
     protected $routes = [];
+    /**
+     * @var array
+     */
     protected $params = [];
 
+    /**
+     * @param $method
+     * @param $pattern
+     * @param $controller
+     */
     public function addRoute($method, $pattern, $controller)
     {
         $pattern = '/' . trim($pattern, '/'); // Удаляем слэш в начале и добавляем одиночный слэш
@@ -15,6 +30,12 @@ class Router {
             'controller' => $controller
         );
     }
+
+    /**
+     * @param $url
+     * @param $method
+     * @return mixed|null
+     */
     public function dispatch($url, $method)
     {
         foreach ($this->routes as $route)
@@ -42,6 +63,9 @@ class Router {
         return null;
     }
 
+    /**
+     * @return array
+     */
     public function getRoutes()
     {
         return $this->routes;

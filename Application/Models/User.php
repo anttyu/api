@@ -2,22 +2,54 @@
 
 namespace Application\Models;
 
+/**
+ * Class User
+ * @package Application\Models
+ */
 class User
 {
+    /**
+     * @var
+     */
     private $conn;
+    /**
+     * @var string
+     */
     private $table_name = "users";
 
+    /**
+     * @var int
+     */
     public int $id;
+    /**
+     * @var string
+     */
     public string $name;
+    /**
+     * @var string
+     */
     public string $email;
+    /**
+     * @var string
+     */
     public string $password;
+    /**
+     * @var string
+     */
     public string $registration_date;
 
+    /**
+     * User constructor.
+     * @param $db
+     */
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
+    /**
+     * @return bool
+     */
     public function create()
     {
         $query = "INSERT INTO
@@ -44,6 +76,9 @@ class User
         return false;
     }
 
+    /**
+     * @return mixed
+     */
     public function read()
     {
         $query = "SELECT * FROM " . $this->table_name;
@@ -54,6 +89,9 @@ class User
         return $stmt;
     }
 
+    /**
+     * @return bool
+     */
     public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
@@ -68,6 +106,9 @@ class User
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function update()
     {
         $query = "UPDATE
@@ -107,6 +148,10 @@ class User
         return false;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function read_one($id)
     {
         $query = "SELECT id, name, email, password FROM " . $this->table_name . " WHERE id = :id";

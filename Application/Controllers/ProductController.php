@@ -6,11 +6,25 @@ use System\MVC\Controller;
 use System\DB\Database;
 use Application\Models\Product;
 
+/**
+ * Class ProductController
+ * @package Application\Controllers
+ */
 class ProductController extends Controller
 {
+    /**
+     * @var \PDO|null
+     */
     public $db;
+    /**
+     * @var Product
+     */
     public $product;
 
+    /**
+     * ProductController constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
         $database = new Database();
@@ -19,6 +33,9 @@ class ProductController extends Controller
         $this->product = new Product($this->db);
     }
 
+    /**
+     *
+     */
     public function create()
     {
         $name = isset($_POST['name']) ? $_POST['name'] : '';
@@ -60,6 +77,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     *
+     */
     public function read()
     {
         $stmt = $this->product->read();
@@ -94,6 +114,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function update($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
@@ -127,6 +150,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
@@ -143,6 +169,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * @param $keywords
+     */
     public function search($keywords)
     {
         $keywords =  substr($keywords, strrpos($keywords, '/') + 1);
@@ -174,6 +203,9 @@ class ProductController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function read_one($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);

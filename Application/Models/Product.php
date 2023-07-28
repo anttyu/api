@@ -2,28 +2,68 @@
 
 namespace Application\Models;
 
+/**
+ * Class Product
+ * @package Application\Models
+ */
 class Product
 {
     // подключение к базе данных и таблице "products"
+    /**
+     * @var
+     */
     private $conn;
+    /**
+     * @var string
+     */
     private string $table_name = "products";
 
     // свойства объекта
+    /**
+     * @var int
+     */
     public int $id;
+    /**
+     * @var string
+     */
     public string $name;
+    /**
+     * @var string
+     */
     public string $description;
+    /**
+     * @var int
+     */
     public int $price;
+    /**
+     * @var int
+     */
     public int $category_id;
+    /**
+     * @var string
+     */
     public string $category_name;
+    /**
+     * @var string
+     */
     public string $created;
 
     // конструктор для соединения с базой данных
-     public function __construct($db)
+
+    /**
+     * Product constructor.
+     * @param $db
+     */
+    public function __construct($db)
     {
         $this->conn = $db;
     }
 
     // метод для получения товаров
+
+    /**
+     * @return mixed
+     */
     public function read()
     {
         // выбираем все записи
@@ -46,6 +86,10 @@ class Product
     }
 
     // метод для создания товаров
+
+    /**
+     * @return bool
+     */
     public function create()
     {
         // запрос для вставки (создания) записей
@@ -80,6 +124,11 @@ class Product
     }
 
     // метод для получения конкретного товара по ID
+
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function read_one($id)
     {
         $query = "SELECT id, name, description, price, category_id, created, modified FROM " . $this->table_name . " WHERE id = :id";
@@ -94,6 +143,10 @@ class Product
     }
 
     // метод для обновления товара
+
+    /**
+     * @return bool
+     */
     public function update()
     {
         // запрос для обновления записи (товара)
@@ -144,6 +197,9 @@ class Product
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
@@ -159,6 +215,11 @@ class Product
     }
 
     // метод для поиска товаров
+
+    /**
+     * @param $keywords
+     * @return mixed
+     */
     public function search($keywords)
     {
         // поиск записей (товаров) по "названию товара", "описанию товара", "названию категории"

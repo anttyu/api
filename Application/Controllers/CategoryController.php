@@ -6,10 +6,25 @@ use System\MVC\Controller;
 use System\DB\Database;
 use Application\Models\Category;
 
+/**
+ * Class CategoryController
+ * @package Application\Controllers
+ */
 class CategoryController extends Controller
 {
+    /**
+     * @var \PDO|null
+     */
     public $db;
+    /**
+     * @var Category
+     */
     public $category;
+
+    /**
+     * CategoryController constructor.
+     * @throws \Exception
+     */
     public function __construct()
     {
         $database = new Database();
@@ -18,6 +33,9 @@ class CategoryController extends Controller
         $this->category = new Category($this->db);
     }
 
+    /**
+     *
+     */
     public function read()
     {
         $stmt = $this->category->read();
@@ -46,6 +64,9 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function read_one($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
@@ -77,6 +98,9 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     *
+     */
     public function create()
     {
         $name = isset($_POST['name']) ? $_POST['name'] : '';
@@ -113,6 +137,9 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function update($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);
@@ -138,6 +165,9 @@ class CategoryController extends Controller
         }
     }
 
+    /**
+     * @param $id
+     */
     public function delete($id)
     {
         $id = (int) substr($id, strrpos($id, '/') + 1);

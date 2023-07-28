@@ -2,24 +2,56 @@
 
 namespace Application\Models;
 
+/**
+ * Class Category
+ * @package Application\Models
+ */
 class Category
 {
     // соединение с БД и таблицей "categories"
+    /**
+     * @var
+     */
     private $conn;
+    /**
+     * @var string
+     */
     private $table_name = "categories";
 
     // свойства объекта
+    /**
+     * @var int
+     */
     public int $id;
+    /**
+     * @var string
+     */
     public string $name;
+    /**
+     * @var string
+     */
     public string $description;
+    /**
+     * @var string
+     */
     public string $created;
+    /**
+     * @var string
+     */
     public string $modified;
 
+    /**
+     * Category constructor.
+     * @param $db
+     */
     public function __construct($db)
     {
         $this->conn = $db;
     }
 
+    /**
+     * @return mixed
+     */
     public function read()
     {
         $query = "SELECT
@@ -35,6 +67,10 @@ class Category
         return $stmt;
     }
 
+    /**
+     * @param $id
+     * @return mixed
+     */
     public function read_one($id)
     {
         $query = "SELECT id, name, description FROM " . $this->table_name . " WHERE id = :id";
@@ -48,6 +84,9 @@ class Category
         return $stmt;
     }
 
+    /**
+     * @return bool
+     */
     public function create()
     {
         // запрос для вставки (создания) записей
@@ -79,6 +118,9 @@ class Category
         return false;
     }
 
+    /**
+     * @return bool
+     */
     public function delete()
     {
         $query = "DELETE FROM " . $this->table_name . " WHERE id = ?";
@@ -92,6 +134,10 @@ class Category
         }
         return false;
     }
+
+    /**
+     * @return bool
+     */
     public function update()
     {
         // запрос для обновления записи (товара)
